@@ -1,10 +1,14 @@
 class Banker:
-    
-    def shelf(self):
-        pass
+    def __init__(self, balance=0, shelved=0):
+        self.balance = balance
+        self.shelved = shelved
+
+    def shelf(self, points):
+        self.shelved = points
 
     def bank(self):
-        pass
+        self.balance += self.shelved
+        self.clear_shelf()
 
     def clear_shelf(self):
-        pass
+        self.shelved = 0
