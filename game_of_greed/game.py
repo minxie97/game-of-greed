@@ -1,5 +1,5 @@
-from game_of_greed.game_logic import GameLogic
-from game_of_greed.banker import Banker
+from game_logic import GameLogic
+from banker import Banker  
 from sys import exit
 
 class Game:
@@ -45,16 +45,17 @@ class Game:
 
     def game_start(self):
 
+        print(f'Starting round {self.rounds}')
+        self.user_roll_dice()
+
         while self.playing:
-            print(f'Starting round {self.rounds}')
-            self.user_roll_dice()
             print('Enter dice to keep, or (q)uit:')
 
             keep_or_quit = input('> ')
 
             if keep_or_quit.lower() in ['q', 'quit']:
                 self.playing = False
-       
+
             else: 
                 self.num_dice -= len(keep_or_quit)
                 self.user_score(keep_or_quit)
@@ -67,13 +68,15 @@ class Game:
                     self.bank.bank()
                     print(f'Total score is {self.bank.balance} points')
                     self.num_dice = 6
+                    print(f'Starting round {self.rounds}')
+                    self.user_roll_dice()
+
+                elif response.lower() == 'r':
+                    self.user_roll_dice()
 
                 elif response.lower() in ['q', 'quit']:
                     self.playing = False
 
-                elif response.lower() == 'r':
-                    print('Doing R stuff')
-                    
         print(f'Thanks for playing. You earned {self.bank.balance} points')
         exit()
 
@@ -81,4 +84,3 @@ class Game:
 if __name__ == '__main__':
     game = Game()
     game.play()
-    
