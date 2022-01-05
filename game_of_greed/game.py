@@ -19,7 +19,6 @@ class Game:
         print(f'Rolling {self.num_dice} dice...')
         results = self.roller(self.num_dice)
         self.current_dice = results
-        # self.print_rolled_dice()
         return list(results)
 
     def print_rolled_dice(self):
@@ -80,9 +79,11 @@ class Game:
                 self.print_score()               
                 self.continue_round()
             else:
-                print('Please select some dice!')
+                print('Invalid input, please select some dice')
 
     def validate_input(self, user_input, dice_rolled):
+        if len(user_input) > 6:
+            return False
         try:
             int(user_input)
             user_list = [int(i) for i in user_input]
@@ -90,6 +91,7 @@ class Game:
             for num in user_list:
                 if num in dice_rolled:
                     check.append(num)
+
                 else:
                     return False
             return True
