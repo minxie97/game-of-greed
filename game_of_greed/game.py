@@ -1,5 +1,9 @@
-from game_of_greed.game_logic import GameLogic
-from game_of_greed.banker import Banker
+try:
+    from game_of_greed.game_logic import GameLogic
+    from game_of_greed.banker import Banker  
+except:
+    from game_logic import GameLogic
+    from banker import Banker  
 from sys import exit
 
 class Game:
@@ -15,7 +19,8 @@ class Game:
         print(f'Rolling {self.num_dice} dice...')
         results = self.roller(self.num_dice)
         self.current_dice = results
-        self.print_rolled_dice()
+        # self.print_rolled_dice()
+        return list(results)
 
     def print_rolled_dice(self):
         roller_str = ''
@@ -30,7 +35,6 @@ class Game:
 
     def print_score(self):
         print(f'You have {self.bank.shelved} unbanked points and {self.num_dice} dice remaining')
-        # print('(r)oll again, (b)ank your points or (q)uit:')
 
     def bank_points(self):
         print(f'You banked {self.bank.shelved} points in round {self.rounds}')
@@ -39,53 +43,14 @@ class Game:
         print(f'Total score is {self.bank.balance} points')
         self.num_dice = 6
         self.rolled_dice = ''
-    
+
     def end_game(self):
-        print(f'Thanks for playing. You earned {self.bank.balance} points.')
+        print(f'Thanks for playing. You earned {self.bank.balance} points')
         self.playing = False
         exit()
 
-    def player_takes_turn(self):
-        self.user_roll_dice()
-        isValid = False
-        user_input = ''
-        while isValid is False:
-            print('Enter dice to keep, or (q)uit:')
-            user_input = input('> ')
-            isValid= self.validate_input(user_input)
-            # self.print_rolled_dice()
-
-            if user_input.lower() in ['q', 'quit']:
-                self.end_game()
-
-        self.num_dice -= len(user_input)
-        self.current_dice = user_input
-        self.user_score(user_input)
-        self.print_score()
-
-    def roll_bank_quit(self):
-        isValid = False
-        user_choice = ''
-        while isValid is False:
-            user_choice = input('(r)oll again, (b)ank your points or (q)uit: \n> ')
-            isValid = self.validate_input(user_choice)
-        
-        if user_choice.lower() in ['q', 'quit']:
-            self.end_game()
-        elif user_choice.lower() in ['r', 'roll']:
-            self.player_takes_turn
-        elif user_choice.locals() in ['b', 'bank']:
-            self.bank.bank()
-
-
-    def validate_input(self, user_input):
-        try:
-            int(user_input)
-            return True
-        except Exception as e:
-            return False
-
-    def play(self):
+    def play(self, roller=GameLogic.roll_dice):
+        self.roller = roller
         yes_or_no = None
         print('Welcome to Game of Greed')
         while yes_or_no not in ['y', 'yes']:
@@ -96,16 +61,58 @@ class Game:
                 print('OK. Maybe another time')
                 exit()
             elif yes_or_no.lower() in ['y', 'yes']:
-                self.game_play()
+                self.play_game()
             else:
                 print('You must choose....but choose wisely')
 
-    def game_play(self):
-        print(f'Staring round {self.rounds}')
-        while self.playing:
-            print('game_play loop')
-            self.player_takes_turn()
+    def play_game(self):
+        print(f'Starting round {self.rounds}')
+        dice_rolled = self.user_roll_dice()
+        while True:
+            self.print_rolled_dice()
+            print('Enter dice to keep, or (q)uit:')
+            user_input = input('> ')
+            result = self.validate_input(user_input, dice_rolled)
+            if result:
+                self.num_dice -= len(user_input)
+                self.current_dice = user_input
+                self.user_score(user_input)
+                self.print_score()               
+                self.continue_round()
+            else:
+                print('Please select some dice!')
 
+    def validate_input(self, user_input, dice_rolled):
+        try:
+            int(user_input)
+            user_list = [int(i) for i in user_input]
+            check = []
+            for num in user_list:
+                if num in dice_rolled:
+                    check.append(num)
+                else:
+                    return False
+            return True
+        except ValueError as ve:
+            if user_input.lower() in ['q', 'quit']:
+                self.end_game()
+            return False
+
+    def continue_round(self):
+        is_valid_input = False
+        while is_valid_input == False:
+            print('(r)oll again, (b)ank your points or (q)uit:')
+            user_choice = input('> ')
+            if user_choice.lower() in ['r', 'roll']:
+                self.play_game()
+                is_valid_input = True
+            elif user_choice in ['b', 'bank']:
+                self.bank_points()
+                self.play_game()
+            elif user_choice in ['q', 'quit']:
+                self.end_game()
+            else:
+                print('Make a fucking choice') 
 
 if __name__ == '__main__':
     game = Game()
