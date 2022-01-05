@@ -8,7 +8,7 @@
 
 ## PR Link
 
-[Recent PR - main ]()
+[Recent PR - main ](https://github.com/minxie97/game-of-greed/pull/6)
 
 ### Lab 06
 
