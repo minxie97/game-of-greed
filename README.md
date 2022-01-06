@@ -20,3 +20,7 @@
 
 * roll again implementation
   * https://github.com/minxie97/game-of-greed/pull/4
+
+### Lab 08
+
+* https://github.com/minxie97/game-of-greed/pull/10
