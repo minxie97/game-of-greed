@@ -19,7 +19,7 @@ class Game:
         print(f'Rolling {self.num_dice} dice...')
         results = self.roller(self.num_dice)
         self.current_dice = results
-        return list(results)
+        self.print_rolled_dice()
 
     def print_rolled_dice(self):
         roller_str = ''
@@ -48,6 +48,20 @@ class Game:
         self.playing = False
         exit()
 
+    def check_zilch(self, roll):
+        if len(GameLogic.get_scorers(roll)) == 0:
+            self.handle_zilch()
+    
+    def handle_zilch(self):
+        print('****************************************')
+        print('**        Zilch!!! Round over         **')
+        print('****************************************')
+        print(f'You banked 0 points in round {self.rounds}')
+        print(f'Total score is {self.bank.balance} points')
+        self.rounds += 1
+        self.num_dice = 6
+        self.play_game()
+
     def play(self, roller=GameLogic.roll_dice):
         self.roller = roller
         yes_or_no = None
@@ -66,12 +80,16 @@ class Game:
 
     def play_game(self):
         print(f'Starting round {self.rounds}')
-        dice_rolled = self.user_roll_dice()
+        self.user_roll_dice()
         while True:
-            self.print_rolled_dice()
+
+            self.check_zilch(self.current_dice)
             print('Enter dice to keep, or (q)uit:')
 
             user_input = input('> ')
+
+            # Strip space for cheat_testing 
+            user_input = user_input.replace(' ', '')
 
             if user_input.lower() in ['q', 'quit']:
                 self.end_game()
@@ -82,50 +100,31 @@ class Game:
 
             if result == 'q':
                 self.end_game()
-                
+
             if result == True:
                 self.num_dice -= len(user_input)
-                self.current_dice = user_input
                 self.user_score(user_input)
-                self.print_score()               
-                self.continue_round()
+                self.print_score()
+                if self.num_dice == 0:
+                    self.num_dice = 6
+                is_valid_input = False
+                while is_valid_input == False:
+                    print('(r)oll again, (b)ank your points or (q)uit:')
+                    user_choice = input('> ')
+                    if user_choice.lower() in ['r', 'roll']:
+                        self.user_roll_dice()
+                        is_valid_input = True
+                    elif user_choice in ['b', 'bank']:
+                        self.bank_points()
+                        self.play_game()
+                    elif user_choice in ['q', 'quit']:
+                        self.end_game()
+                    else:
+                        print('Make a fucking choice')
+
             else:
                 print('Cheater!!! Or possibly made a typo...')
-
-    # def validate_input(self, user_input, dice_rolled):
-    #     if len(user_input) > 6:
-    #         return False
-    #     try:
-    #         int(user_input)
-    #         user_list = [int(i) for i in user_input]
-    #         check = []
-    #         for num in user_list:
-    #             if num in dice_rolled:
-    #                 check.append(num)
-
-    #             else:
-    #                 return False
-    #         return True
-    #     except ValueError as ve:
-    #         if user_input.lower() in ['q', 'quit']:
-    #             self.end_game()
-    #         return False
-
-    def continue_round(self):
-        is_valid_input = False
-        while is_valid_input == False:
-            print('(r)oll again, (b)ank your points or (q)uit:')
-            user_choice = input('> ')
-            if user_choice.lower() in ['r', 'roll']:
-                self.play_game()
-                is_valid_input = True
-            elif user_choice in ['b', 'bank']:
-                self.bank_points()
-                self.play_game()
-            elif user_choice in ['q', 'quit']:
-                self.end_game()
-            else:
-                print('Make a fucking choice') 
+                self.print_rolled_dice()
 
 if __name__ == '__main__':
     game = Game()

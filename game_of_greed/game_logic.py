@@ -52,3 +52,15 @@ class GameLogic:
 
         except Exception as e:
             return False
+
+    @staticmethod
+    def get_scorers(dice_tuple):
+        dice_count = Counter(dice_tuple)
+        scorers = []
+        for value in dice_count:
+            if value == 1 or value == 5:
+                scorers.append(value)
+            elif dice_count[value] >= 3:
+                for _ in range(dice_count[value]):
+                    scorers.append(value)
+        return tuple(scorers)
