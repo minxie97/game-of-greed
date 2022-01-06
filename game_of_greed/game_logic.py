@@ -46,16 +46,9 @@ class GameLogic:
 
             for num in numbers:
                 num_count = numbers.count(num)
-                print(num_count)
                 if num_count > roll_count[num]:
                     return False
             return True
 
         except Exception as e:
             return False
-
-if __name__ == '__main__':
-    roll = (1,2, 5, 5,)
-    keepers = (1,)
-    x= GameLogic.validate_keepers(roll, keepers)
-    print(x)

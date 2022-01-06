@@ -70,35 +70,46 @@ class Game:
         while True:
             self.print_rolled_dice()
             print('Enter dice to keep, or (q)uit:')
+
             user_input = input('> ')
-            result = self.validate_input(user_input, dice_rolled)
-            if result:
+
+            if user_input.lower() in ['q', 'quit']:
+                self.end_game()
+            
+            kept_dice = tuple(user_input)
+            rolled_dice = tuple(self.current_dice)
+            result = GameLogic.validate_keepers(rolled_dice, kept_dice)
+
+            if result == 'q':
+                self.end_game()
+                
+            if result == True:
                 self.num_dice -= len(user_input)
                 self.current_dice = user_input
                 self.user_score(user_input)
                 self.print_score()               
                 self.continue_round()
             else:
-                print('Invalid input, please select some dice')
+                print('Cheater!!! Or possibly made a typo...')
 
-    def validate_input(self, user_input, dice_rolled):
-        if len(user_input) > 6:
-            return False
-        try:
-            int(user_input)
-            user_list = [int(i) for i in user_input]
-            check = []
-            for num in user_list:
-                if num in dice_rolled:
-                    check.append(num)
+    # def validate_input(self, user_input, dice_rolled):
+    #     if len(user_input) > 6:
+    #         return False
+    #     try:
+    #         int(user_input)
+    #         user_list = [int(i) for i in user_input]
+    #         check = []
+    #         for num in user_list:
+    #             if num in dice_rolled:
+    #                 check.append(num)
 
-                else:
-                    return False
-            return True
-        except ValueError as ve:
-            if user_input.lower() in ['q', 'quit']:
-                self.end_game()
-            return False
+    #             else:
+    #                 return False
+    #         return True
+    #     except ValueError as ve:
+    #         if user_input.lower() in ['q', 'quit']:
+    #             self.end_game()
+    #         return False
 
     def continue_round(self):
         is_valid_input = False
