@@ -11,7 +11,6 @@ import re
 from game_of_greed_class_repo.game import Game
 from game_of_greed_class_repo.game_logic import GameLogic
 
-
 class BaseBot(ABC):
     """Base class for Game of Greed bots"""
 
@@ -21,7 +20,6 @@ class BaseBot(ABC):
         self.print_all = print_all
         self.dice_remaining = 0
         self.unbanked_points = 0
-
         self.real_print = print
         self.real_input = input
         builtins.print = self._mock_print
@@ -47,7 +45,6 @@ class BaseBot(ABC):
         """steps in front of the real builtin print function"""
 
         line = " ".join(args)
-
         if "unbanked points" in line:
 
             # parse the proper string
@@ -91,7 +88,6 @@ class BaseBot(ABC):
 
         roll = GameLogic.get_scorers(self.last_roll)
 
-        roll = list(roll)
         roll_string = ""
 
         for value in roll:
@@ -139,22 +135,43 @@ class NervousNellie(BaseBot):
     def _roll_bank_or_quit(self):
         return "b"
 
-class Hal9000(BaseBot):
+class MiddlingMargaret(BaseBot):
+    """MiddlingMargaret has a moderate playing style"""
+
+    def _roll_bank_or_quit(self):
+
+        if self.unbanked_points >= 500 or self.dice_remaining < 3:
+            return "b"
+
+        return "r"
+
+class DaringDarla(BaseBot):
+    """DaringDarla rolls whenever more than 1 dice remaining """
+
+    def _roll_bank_or_quit(self):
+        if self.dice_remaining == 1:
+            return "b"
+
+        return "r"
+
+class Roger(BaseBot):
+    """Roger rolls whenever more than 2 dice remaining """
+
+    def _roll_bank_or_quit(self):
+        if self.unbanked_points >= 800:
+            return "b"
+
+        return "r"
+
+class YourBot(BaseBot):
     def _roll_bank_or_quit(self):
         """your logic here"""
         return "b"
 
-    def _enter_dice(self):
-        """simulate user entering which dice to keep.
-        Defaults to all scoring dice"""
-
-        return super()._enter_dice()
-
-
-
-
-
 if __name__ == "__main__":
-    num_games = 1000
-    NervousNellie.play(num_games)
-    # Hal9000.play(num_games)
+    num_games = 100
+    # NervousNellie.play(num_games)
+    # MiddlingMargaret.play(num_games)
+    Roger.play(num_games)
+    DaringDarla.play(num_games)
+    # YourBot.play(num_games)
