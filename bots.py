@@ -141,8 +141,22 @@ class NervousNellie(BaseBot):
 
 class Hal9000(BaseBot):
     def _roll_bank_or_quit(self):
-        """your logic here"""
-        return "b"
+        if self.dice_remaining == 0:
+            return "r"
+        elif self.dice_remaining == 1:
+            if self.unbanked_points < 50:
+                return "r"
+            else:
+                return "b"
+        elif self.dice_remaining == 2:
+            if self.unbanked_points < 100:
+                return "r"
+            else:
+                return "b"
+        elif self.unbanked_points >= 600:
+            return "b"
+        else:
+            return "r"
 
     def _enter_dice(self):
         """simulate user entering which dice to keep.
@@ -155,6 +169,6 @@ class Hal9000(BaseBot):
 
 
 if __name__ == "__main__":
-    num_games = 1000
-    NervousNellie.play(num_games)
-    # Hal9000.play(num_games)
+    num_games = 4000
+    #NervousNellie.play(num_games)
+    Hal9000.play(num_games)
