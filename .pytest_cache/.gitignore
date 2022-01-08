@@ -1,0 +1,7 @@
+# Created by pytest automatically.
+.pytest_cache
+.
+__pycache__/
+t.py
+test/__pycache__/
+.env

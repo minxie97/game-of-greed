@@ -22,3 +22,45 @@ class GameLogic:
                     if side in [1, 5]:
                         score += 100 * count if side == 1 else 50 * count
         return score
+    
+    @staticmethod
+    def dice_tuple_to_dict(tup):
+        result_dict = {}
+        for i in list(tup):
+            if  i in result_dict: 
+                result_dict[i] += 1
+            else:
+                result_dict[i] = 1
+        return result_dict
+
+    @staticmethod
+    def validate_keepers(roll, keepers):
+        rolled = list(roll)
+        roll_count = GameLogic.dice_tuple_to_dict(roll)
+
+        try:
+            numbers = [int(i) for i in list(keepers)]
+
+            if len(numbers) > len(rolled):
+                return False
+
+            for num in numbers:
+                num_count = numbers.count(num)
+                if num_count > roll_count[num]:
+                    return False
+            return True
+
+        except Exception as e:
+            return False
+
+    @staticmethod
+    def get_scorers(dice_tuple):
+        dice_count = Counter(dice_tuple)
+        scorers = []
+        for value in dice_count:
+            if value == 1 or value == 5:
+                scorers.append(value)
+            elif dice_count[value] >= 3:
+                for _ in range(dice_count[value]):
+                    scorers.append(value)
+        return tuple(scorers)
