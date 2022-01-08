@@ -5,8 +5,11 @@ at same level as pyproject.toml
 from abc import ABC, abstractmethod
 import builtins
 import re
-from game_of_greed.game import Game
-from game_of_greed.game_logic import GameLogic
+# from game_of_greed.game import Game
+# from game_of_greed.game_logic import GameLogic
+
+from game_of_greed_class_repo.game import Game
+from game_of_greed_class_repo.game_logic import GameLogic
 
 
 class BaseBot(ABC):
@@ -88,6 +91,7 @@ class BaseBot(ABC):
 
         roll = GameLogic.get_scorers(self.last_roll)
 
+        roll = list(roll)
         roll_string = ""
 
         for value in roll:
@@ -135,7 +139,7 @@ class NervousNellie(BaseBot):
     def _roll_bank_or_quit(self):
         return "b"
 
-class YourBot(BaseBot):
+class Hal9000(BaseBot):
     def _roll_bank_or_quit(self):
         """your logic here"""
         return "b"
@@ -148,6 +152,6 @@ class YourBot(BaseBot):
 
 
 if __name__ == "__main__":
-    num_games = 100
+    num_games = 1
     NervousNellie.play(num_games)
-    YourBot.play(num_games)
+    # Hal9000.play(num_games)
