@@ -120,7 +120,7 @@ class Game:
                     elif user_choice in ['q', 'quit']:
                         self.end_game()
                     else:
-                        print('Make a fucking choice')
+                        print('Make a choice that isn\'t stupid')
 
             else:
                 print('Cheater!!! Or possibly made a typo...')
